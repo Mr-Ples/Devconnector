@@ -1,6 +1,7 @@
 //Hiring the manager
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 
 //Routes
 const users = require("./routes/api/users");
@@ -23,6 +24,10 @@ const port = process.env.PORT || 5000;
 app.use(function(req, res, next) {
   console.log("Request: ", req), console.log("Response: ", res), next();
 });
+
+//Body parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use("/api/users", users);
 app.use("/api/profile", profile);
