@@ -3,10 +3,17 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 
+const passport = require("passport");
+
 //Routes
 const users = require("./routes/api/users");
 const posts = require("./routes/api/posts");
 const profile = require("./routes/api/profile");
+
+//passport middleware
+app.use(passport.initialize());
+//config
+require("./config/passport.js")(passport);
 
 //database
 const mongoose = require("mongoose");
