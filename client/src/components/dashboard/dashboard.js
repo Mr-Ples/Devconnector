@@ -1,7 +1,70 @@
 import React, { Component } from "react";
+import propTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { getCurrentProfile } from "../../actions/profileActions";
+import Spinner from "../common/Spinner";
 
-export default class dashboard extends Component {
+class Dashboard extends Component {
+  //lifecycle method?
+  componentDidMount() {
+    //call ajax if we weren't using redux
+    this.props.getCurrentProfile();
+  }
+
   render() {
-    return <div />;
+    const { user } = this.props.auth;
+    const { profile, loading } = this.props.profile;
+
+    let dashboardContent;
+
+    if (profile === null || loading) {
+      dashboardContent = <Spinner />;
+    } else {
+      //Check if logged in user has profile data
+      if (Object.keys(profile).length > 0) {
+        dashboardContent = <h4>TODO: DISPLAY PROFILE</h4>;
+      } else {
+        //User is logged in but has no profile
+        dashboardContent = (
+          <div>
+            <p className="load text-muted"> Welcome {user.name}</p>
+            <p> You have not yet setup a profile, please add some info</p>
+            <Link to="/create-profile" className="btn btn-lg btn-info">
+              Create Profile
+            </Link>
+          </div>
+        );
+      }
+    }
+
+    return (
+      <div className="dashboard">
+        <div className="contianer">
+          <div className="row">
+            <div className="coll-md-12">
+              <h1 className="display-4">Dashboard</h1>
+              {dashboardContent}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 }
+
+Dashboard.propTypes = {
+  getCurrentProfile: propTypes.func.isRequired,
+  auth: propTypes.object.isRequired,
+  profile: propTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  profile: state.profile,
+  auth: state.auth
+});
+
+export default connect(
+  mapStateToProps,
+  { getCurrentProfile }
+)(Dashboard);
